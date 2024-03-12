@@ -17,6 +17,7 @@
 		444114D52BA067690018B1DB /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 444114D42BA067690018B1DB /* Kingfisher */; };
 		444114D72BA070070018B1DB /* RickAndMortyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444114D62BA070070018B1DB /* RickAndMortyModel.swift */; };
 		444114DB2BA0737F0018B1DB /* PersonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444114DA2BA0737F0018B1DB /* PersonCell.swift */; };
+		444114DD2BA09DF90018B1DB /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444114DC2BA09DF90018B1DB /* NetworkService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		444114D12BA05C260018B1DB /* PersonDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetails.swift; sourceTree = "<group>"; };
 		444114D62BA070070018B1DB /* RickAndMortyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RickAndMortyModel.swift; sourceTree = "<group>"; };
 		444114DA2BA0737F0018B1DB /* PersonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonCell.swift; sourceTree = "<group>"; };
+		444114DC2BA09DF90018B1DB /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 				444114BD2B9F4E880018B1DB /* AppDelegate.swift */,
 				444114BF2B9F4E880018B1DB /* SceneDelegate.swift */,
 				444114C12B9F4E880018B1DB /* ViewController.swift */,
+				444114DC2BA09DF90018B1DB /* NetworkService.swift */,
 				444114D12BA05C260018B1DB /* PersonDetails.swift */,
 				444114D62BA070070018B1DB /* RickAndMortyModel.swift */,
 				444114DA2BA0737F0018B1DB /* PersonCell.swift */,
@@ -161,6 +164,7 @@
 				444114BE2B9F4E880018B1DB /* AppDelegate.swift in Sources */,
 				444114C02B9F4E880018B1DB /* SceneDelegate.swift in Sources */,
 				444114D22BA05C260018B1DB /* PersonDetails.swift in Sources */,
+				444114DD2BA09DF90018B1DB /* NetworkService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,42 +31,17 @@ class ViewController: UIViewController {
         viewController?.personID = persons[indexPath.row].id
     }
 
-    func fetchCharacters() {
-        guard let url = URL(string: "https://rickandmortyapi.com/api/character") else {
-            return
-        }
-
-        let urlRequest = URLRequest(url: url)
-        URLSession.shared.dataTask(with: urlRequest) { data, urlResponse, error in
-            guard let data else { return }
-
-            do {
-                let rickAndMortyModel = try JSONDecoder().decode(RickAndMortyModel.self, from: data)
-                self.persons = rickAndMortyModel.persons
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }.resume()
-    }
-
-    func getImage(urlString: String, completion: @escaping (UIImage?) -> Void) {
-        guard let url = URL(string: urlString) else { return }
-        KingfisherManager.shared.retrieveImage(with: url) { result in
+    private func fetchCharacters() {
+        NetworkService.shared.fetchCharacters(completionQueue: .main) { [weak self] result in
             switch result {
-            case .success(let value):
-                DispatchQueue.main.async {
-                    completion(value.image)
-                }
-
+            case .success(let persons):
+                self?.persons = persons
+                self?.tableView.reloadData()
             case .failure(let error):
                 print(error)
             }
         }
     }
-
 }
 
 extension ViewController: UITableViewDataSource {

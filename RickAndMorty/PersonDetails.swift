@@ -10,40 +10,43 @@ import UIKit
 final class PersonDetails: UIViewController {
 
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var nameOfPerson: UILabel!
+    @IBOutlet weak var genderOfPerson: UILabel!
+    @IBOutlet weak var allInformationLabel: UILabel!
 
     var personID: Int?
 
+    private var person: RickAndMortyModel.Person?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchDetails()
 
+        fetchDetails()
     }
 
     func fetchDetails() {
-        guard let personID else {
-            return
-        }
-        
-        guard let url = URL(string: "https://rickandmortyapi.com/api/character/\(personID)") else {
-            return
-        }
-
-        let urlRequest = URLRequest(url: url)
-
-        URLSession.shared.dataTask(with: urlRequest) { data, urlResponse, error in
-            guard let data else { return }
-            
-            do {
-                let person = try JSONDecoder().decode(RickAndMortyModel.Person.self, from: data)
-                print(person)
-                DispatchQueue.main.async {
-                    self.navigationItem.title = person.name
-                    self.imageView.kf.setImage(with: URL(string: person.image))
-                }
-            } catch {
-                print(error.localizedDescription)
+        NetworkService.shared.fetchDetails(
+            personID: personID,
+            completionQueue: .main
+        ) { [weak self] result in
+            switch result {
+            case .success(let person):
+                self?.person = person
+                self?.updateView()
+            case .failure(let error):
+                print(error)
             }
-        }.resume()
+        }
+    }
+
+    private func updateView() {
+        guard let person else { return }
+
+        navigationItem.title = person.name
+        imageView.kf.setImage(with: URL(string: person.image))
+        nameOfPerson.text = person.name
+        genderOfPerson.text = "Gender: \(person.gender.rawValue)"
+        allInformationLabel.text = "Status: \(person.status.rawValue)"
     }
 }
 
