@@ -6,15 +6,29 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ViewController: UIViewController {
 
+    @IBOutlet var tableView: UITableView!
+    
     private var persons: [RickAndMortyModel.Person] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         fetchCharacters()
+
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+
+        let viewController = segue.destination as? PersonDetails
+        guard let indexPath = tableView.indexPathForSelectedRow else { return }
+        viewController?.personID = persons[indexPath.row].id
     }
 
     func fetchCharacters() {
@@ -29,52 +43,55 @@ class ViewController: UIViewController {
             do {
                 let rickAndMortyModel = try JSONDecoder().decode(RickAndMortyModel.self, from: data)
                 self.persons = rickAndMortyModel.persons
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             } catch {
                 print(error.localizedDescription)
             }
         }.resume()
     }
 
+    func getImage(urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else { return }
+        KingfisherManager.shared.retrieveImage(with: url) { result in
+            switch result {
+            case .success(let value):
+                DispatchQueue.main.async {
+                    completion(value.image)
+                }
+
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
 }
 
-struct RickAndMortyModel: Decodable {
-    let persons: [Person]
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        persons.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "personCell", for: indexPath) as? PersonCell else {
+            return UITableViewCell()
+        }
 
-    enum CodingKeys: String, CodingKey {
-        case persons = "results"
+        let person = persons[indexPath.row]
+
+        cell.nameLabel.text = person.name
+        cell.personImageView.kf.setImage(with: URL(string: person.image))
+        cell.personImageView.layer.cornerRadius = 16
+        cell.personImageView.layer.cornerCurve = .continuous
+
+        return cell
     }
 }
 
-extension RickAndMortyModel {
-
-    struct Person: Decodable {
-        let id: Int
-        let name: String
-        let status: Status
-        let type: String
-        let gender: Gender
-        let location: Location
-        let image: String
-        let episode: [String]
-
-        enum Status: String, Decodable {
-            case alive = "Alive"
-            case dead = "Dead"
-            case unknown = "unknown"
-        }
-
-        enum Gender: String, Decodable {
-            case female = "Female"
-            case male = "Male"
-            case unknown = "unknown"
-        }
-    }
-}
-
-extension RickAndMortyModel.Person {
-
-    struct Location: Decodable {
-        let name: String
-        let url: String
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 92
     }
 }
